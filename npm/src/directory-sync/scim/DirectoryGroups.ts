@@ -89,7 +89,8 @@ export class DirectoryGroups {
           schemas: ['urn:ietf:params:scim:schemas:core:2.0:Group'],
           id: group.id,
           displayName: group.name,
-          members: [],
+          // Okta rebuilds its next PUT from this response, so an empty list makes it push only the delta.
+          members: group.raw?.members ?? [],
         },
       };
     }
@@ -210,7 +211,7 @@ export class DirectoryGroups {
         schemas: ['urn:ietf:params:scim:schemas:core:2.0:Group'],
         id: group.id,
         displayName: updatedGroup.name,
-        members: [],
+        members: updatedGroup.raw?.members ?? [],
       },
     };
   }

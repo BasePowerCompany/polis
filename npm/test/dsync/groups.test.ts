@@ -113,6 +113,26 @@ tap.test('Directory groups /', async (t) => {
       t.equal(data.displayName, 'Developers Updated');
     });
 
+    t.test('Should return the members of the last PUT on PUT and GET', async (t) => {
+      const members = [{ value: 'user-1', display: 'one@example.com' }, { value: 'user-2' }];
+
+      const put = await directorySync.requests.handle(
+        groupsRequest.updateById(directory, createdGroup.id, {
+          ...createdGroup,
+          displayName: 'Developers Updated',
+          members,
+        })
+      );
+
+      t.equal(put.status, 200);
+      t.strictSame(put.data.members, members);
+
+      const get = await directorySync.requests.handle(groupsRequest.getById(directory, createdGroup.id));
+
+      t.equal(get.status, 200);
+      t.strictSame(get.data.members, members);
+    });
+
     t.test('Should be able to delete a group', async (t) => {
       const request = groupsRequest.deleteById(directory, createdGroup.id);
 
